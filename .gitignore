@@ -1,0 +1,69 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Media files
+*.mp3
+*.mp4
+*.wav
+*.m4a
+*.avi
+*.mov
+*.mkv
+*.webm
+*.flv
+*.wmv
+*.m4v
+
+# Transcripts and outputs
+*.json
+*.srt
+*screenplay*.md
+*subtitle*.srt
+*transcript*.json
+
+# Workbench folders (user data)
+workbench/input/
+workbench/output/*
+
+# Except the example
+!workbench/output/EXAMPLE - AI Ethics Podcast/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
+
+# Temporary files
+*.tmp
+*.log
