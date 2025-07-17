@@ -1,4 +1,4 @@
-# AssemblyAI Workbench
+# Transit – Transcription and Speaker Labeling
 
 Automated transcription and processing pipeline for audio and video files using AssemblyAI.
 
