@@ -78,6 +78,10 @@ def find_unprocessed_media_files():
     """Find all media files that need processing"""
     unprocessed = []
     
+    # Check if we're in workbench mode
+    current_dir = os.getcwd()
+    in_workbench = 'workbench/input' in current_dir or current_dir.endswith('input')
+    
     # Find all video and audio files
     all_extensions = VIDEO_EXTENSIONS + AUDIO_EXTENSIONS
     media_files = []
@@ -86,16 +90,30 @@ def find_unprocessed_media_files():
         media_files.extend(glob.glob(f"*{ext}"))
         media_files.extend(glob.glob(f"*{ext.upper()}"))
     
+    print(f"   Found {len(media_files)} media files in directory")
+    
     for media_file in media_files:
         base_name = Path(media_file).stem
+        print(f"   Checking: {media_file}")
         
         # Check if already processed (has corresponding JSON)
-        json_file = f"{base_name}.json"
+        if in_workbench:
+            # In workbench mode, check output directory
+            output_dir = current_dir.replace('/input', '/output')
+            json_file = os.path.join(output_dir, base_name, f"{base_name}.json")
+            print(f"      Looking for JSON at: {json_file}")
+        else:
+            # Normal mode - check current directory
+            json_file = f"{base_name}.json"
+            
         if os.path.exists(json_file):
+            print(f"      Skipping - already processed (found {json_file})")
             continue
         
         # Check if it's already in a folder
-        if os.path.dirname(media_file) != '.':
+        dirname = os.path.dirname(media_file)
+        if dirname and dirname != '.':
+            print(f"      Skipping - file is in subdirectory: {dirname}")
             continue
         
         # Get file info

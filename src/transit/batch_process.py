@@ -335,6 +335,18 @@ def find_unprocessed_mp3_files(search_dir=None):
     unprocessed = []
     
     for mp3_file in mp3_files:
+        # Skip files that are still being written (check if file size is stable)
+        try:
+            size1 = os.path.getsize(mp3_file)
+            time.sleep(0.1)  # Wait 100ms
+            size2 = os.path.getsize(mp3_file)
+            if size1 != size2:
+                print(f"⏳ Skipping {mp3_file} - file is still being written")
+                continue
+        except OSError:
+            # File might have been moved/deleted
+            continue
+            
         base_name = get_base_filename(mp3_file)
         # Check in output directory if using workbench
         if search_dir == INPUT_DIR:
@@ -471,16 +483,30 @@ def run_video_preprocessor(specific_files=None):
     if os.path.exists(preprocessor_path):
         print("🎬 Running video preprocessor...")
         try:
+            # Save current directory
+            original_dir = os.getcwd()
+            
+            # Change to INPUT_DIR if in workbench mode and no specific files
+            if not specific_files and os.path.exists(INPUT_DIR):
+                os.chdir(INPUT_DIR)
+            
             cmd = ['python3', preprocessor_path]
             if specific_files:
                 cmd.extend(specific_files)
             result = subprocess.run(cmd, capture_output=True, text=True)
+            
+            # Restore original directory
+            os.chdir(original_dir)
+            
             if result.stdout:
                 print(result.stdout)
             if result.returncode != 0 and result.stderr:
                 print(f"⚠️  Preprocessor warning: {result.stderr}")
         except Exception as e:
             print(f"⚠️  Could not run video preprocessor: {e}")
+            # Make sure to restore directory on error
+            if 'original_dir' in locals():
+                os.chdir(original_dir)
     else:
         print("ℹ️  Video preprocessor not found, skipping video preprocessing")
 
@@ -496,6 +522,8 @@ def main():
         print(f"📂 Using workbench mode: {WORKBENCH_DIR}")
         print(f"   Input: {INPUT_DIR}")
         print(f"   Output: {OUTPUT_DIR}")
+        # Brief pause to allow file system sync
+        time.sleep(0.5)
     else:
         print("📂 Using current directory mode")
     
