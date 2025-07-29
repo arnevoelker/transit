@@ -581,15 +581,23 @@ def main():
             if not os.path.exists(json_file):
                 unprocessed.append(audio_file)
     else:
-        # Find all unprocessed MP3 files
-        unprocessed = find_unprocessed_mp3_files()
+        # Find all unprocessed audio files (not just MP3s)
+        unprocessed = []
+        for ext in ['.mp3', '.wav', '.m4a', '.aac', '.flac', '.ogg']:
+            pattern = os.path.join(INPUT_DIR if os.path.exists(INPUT_DIR) else ".", f"*{ext}")
+            for audio_file in glob.glob(pattern):
+                base_name = get_base_filename(audio_file)
+                # Check in OUTPUT_DIR for the JSON file
+                json_path = os.path.join(OUTPUT_DIR, f"{base_name}.json") if os.path.exists(OUTPUT_DIR) else f"{base_name}.json"
+                if not os.path.exists(json_path):
+                    unprocessed.append(audio_file)
     
     if not unprocessed:
-        print("✨ No unprocessed MP3 files found")
+        print("✨ No unprocessed audio files found")
         print("All files appear to be already processed")
         return
     
-    print(f"📁 Found {len(unprocessed)} unprocessed MP3 files:")
+    print(f"📁 Found {len(unprocessed)} unprocessed audio files:")
     for file in unprocessed:
         print(f"   • {file}")
     
@@ -597,8 +605,8 @@ def main():
     successful = 0
     failed = 0
     
-    for mp3_file in unprocessed:
-        if transcribe_and_process(mp3_file):
+    for audio_file in unprocessed:
+        if transcribe_and_process(audio_file):
             successful += 1
         else:
             failed += 1
