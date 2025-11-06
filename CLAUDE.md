@@ -112,6 +112,50 @@ Check `batch_process.py` for the `speaker_boost=True` parameter in the transcrip
 **Modifying File Detection**:
 Update the `has_been_processed()` function in `batch_process.py` to change what files are considered "already processed".
 
+## Git Workflow
+
+### Branching Strategy
+
+This project uses a simple two-branch workflow:
+
+- **main** - Production-ready, stable code. Always deployable.
+- **develop** - Integration branch for development work. Create feature branches from here.
+
+### Development Process
+
+1. **For new features**:
+   ```bash
+   git checkout develop
+   git pull origin develop
+   git checkout -b feature/your-feature-name
+   # Make changes, commit
+   git push -u origin feature/your-feature-name
+   # Create PR to merge into develop
+   ```
+
+2. **For bug fixes**:
+   ```bash
+   git checkout develop
+   git checkout -b bugfix/issue-description
+   # Fix bug, commit
+   git push -u origin bugfix/issue-description
+   # Create PR to merge into develop
+   ```
+
+3. **Releasing to production**:
+   ```bash
+   git checkout main
+   git merge develop
+   git push origin main
+   ```
+
+### Important Notes
+
+- Always work in feature/bugfix branches, never directly on `main` or `develop`
+- Keep `main` stable - only merge tested code from `develop`
+- Delete feature branches after merging
+- Use descriptive branch names (e.g., `feature/add-whisper-support`, `bugfix/fix-uppercase-extension`)
+
 ## Important Notes
 
 - No formal test suite exists - test changes manually with sample files
