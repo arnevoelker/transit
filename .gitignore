@@ -44,11 +44,11 @@ wheels/
 *transcript*.json
 
 # Workbench folders (user data)
-workbench/input/
+workbench/input/*
+!workbench/input/.gitkeep
 workbench/output/*
-
-# Except the example
 !workbench/output/EXAMPLE - AI Ethics Podcast/
+workbench/backup/
 
 # OS
 .DS_Store
