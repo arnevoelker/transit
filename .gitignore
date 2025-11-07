@@ -67,3 +67,9 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.log
+# Private files (should not exist in public repo)
+config/speakers_db.json
+config/orchestrator_config.json
+dev/
+logs/
+REPOSITORY_ARCHITECTURE_PLAN.md
